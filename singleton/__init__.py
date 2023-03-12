@@ -1,0 +1,1 @@
+from .singleton_lib import singleton  # noqa

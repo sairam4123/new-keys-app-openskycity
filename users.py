@@ -1,5 +1,6 @@
 from enum import IntEnum
 from typing import TYPE_CHECKING
+from singleton import singleton
 
 if TYPE_CHECKING:
     from keys import Key
@@ -39,22 +40,8 @@ class User:
     def __repr__(self) -> str:
         return f"<User name={self.name!r} type={self.type!r} keys={self.keys!r}>"
 
+@singleton
 class UserManager:
-    _inst = None
-    _inited = False
-
-    def __new__(cls: type['UserManager']) -> 'UserManager':
-        if cls._inst:
-            return cls._inst
-        else:
-            cls._inst = object.__new__(cls)
-            return cls._inst
-    
-    def __init__(self) -> None:
-        if self._inited:
-            return
-
-        self._inited = True
     
     def login(self, user_name: str, password: str) -> bool:
         return False

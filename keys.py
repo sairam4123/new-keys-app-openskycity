@@ -8,7 +8,7 @@ import string
 import random
 from enum import IntEnum
 from typing import TYPE_CHECKING
-
+from singleton import singleton
 
 if TYPE_CHECKING:
     from users import User
@@ -51,26 +51,8 @@ class Key:
     def __repr__(self) -> str:
         return f"<Key value={self.value!r} type={self.type!r}>"
 
-
+@singleton
 class KeysManager:
-    _inst: 'KeysManager' = None
-    _inited = False
-
-    def __new__(cls: type['KeysManager']) -> 'KeysManager':
-        if cls._inst:
-            return cls._inst
-        else:
-            cls._inst = object.__new__(cls)
-            return cls._inst
-
-    def __init__(self) -> None:
-        if KeysManager._inited:
-            return
-        KeysManager._inited = True
-    
-    def __del__(self):
-        self._inst = None
-
     def create_key(self, key_type: KeyType):
         inst = Key()
         inst.type = key_type
