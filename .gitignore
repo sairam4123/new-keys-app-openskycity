@@ -1,0 +1,8 @@
+# Virtual Environment related files
+.venv/
+
+# Ruff related files
+.ruff_cache/
+
+# Python cache
+__pycache__/
