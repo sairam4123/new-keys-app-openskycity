@@ -5,6 +5,15 @@ import db
 
 from user_manager import UserManager
 from key_manager import KeysManager
+from constants import API, VERSION, DATABASE
+
+print("-" * 72)
+print("OpenSkyCity Users and Keys Manager (Console Edition)".center(72))
+print("-" * 72)
+print(f"Version: {VERSION}")
+print(f"Database: {DATABASE}")
+print(f"API: {API}")
+print("-" * 72)
 
 dm = db.DatabaseManager.from_file("keys.db")
 dm.generate_tables()
@@ -17,7 +26,7 @@ dev = False
 logged_in = False
 
 def print_menu():
-    print("Menu")
+    print("Main Menu")
     print("1. Register")
     print(f"2. {'Login' if not logged_in else 'Logout'}")
     if logged_in:
@@ -134,6 +143,7 @@ except Exception as e:
     import traceback
     traceback.print_exception(e)
     os.system("pause")
+    quit()
 
 print("Saving all changes")
 um._save()
