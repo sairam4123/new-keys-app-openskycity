@@ -9,3 +9,7 @@ __pycache__/
 
 # SQL Cache
 *.session.sql
+
+# PyInstaller related files
+build/*
+dist/

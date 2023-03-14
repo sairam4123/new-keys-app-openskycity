@@ -17,6 +17,10 @@ class DatabaseManager:
         inst.crsr = crsr
         return inst
     
+    def generate_tables(self):
+        import _tables
+        _tables.generate(self.crsr)
+
     def commit(self):
         self.crsr.connection.commit()
 
