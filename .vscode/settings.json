@@ -1,0 +1,12 @@
+{
+    "python.analysis.typeCheckingMode": "off",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:KeysProject}/keys.db",
+            "name": "Keys (Database)"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

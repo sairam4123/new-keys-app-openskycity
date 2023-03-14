@@ -1,14 +1,14 @@
 
 class SingletonMeta(type):
-    _instances = {}
+    _instances: dict = {}
 
     def __call__(cls, *args, **kwds):
         if not cls._instances.get(cls):
             cls._instances[cls] = super().__call__(*args, **kwds)
         return cls._instances[cls]
 
-def singleton(class_: object = None):
-    def wrapper(class__: object):
+def singleton(class_=None):
+    def wrapper(class__):
         cls = SingletonMeta(
             class__.__name__,
             class__.__bases__,
