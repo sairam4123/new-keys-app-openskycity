@@ -14,8 +14,8 @@ def singleton(class_=None):
             class__.__bases__,
             dict(class__.__dict__),
         )
-        cls.__metaclass__ = SingletonMeta
-        cls.__wrapped__ = class_
+        cls.__metaclass__ = SingletonMeta # type: ignore
+        cls.__wrapped__ = class_ # type: ignore
         return cls
     
     # allows us to use ()

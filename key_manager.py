@@ -9,6 +9,7 @@ from keys import Key
 if TYPE_CHECKING:
     from keys import KeyType
 
+
 @singleton
 class KeysManager:
     def __init__(self) -> None:
@@ -19,7 +20,7 @@ class KeysManager:
         _key = Key(Key._generate_key(), key_type)
         self._cached_keys.append(_key)
         return _key
-    
+
     def has_key(self, key_val: str) -> bool:
         self.db.crsr.execute(
             """
@@ -45,7 +46,7 @@ class KeysManager:
         """)
         keys = self.db.crsr.fetchall()
         return [Key.from_tuple(key_tup) for key_tup in keys]
-    
+
     def _save(self) -> None:
         self.db.crsr.executemany(
             """

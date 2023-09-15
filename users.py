@@ -39,6 +39,11 @@ class User:
         self.keys.append(key)
         self._update()
     
+    def remove_key(self, key: 'Key'):
+        key.set_owner(None)
+        self.keys.remove(key)
+        self._update()
+    
     def to_tuple(self):
         return (
             self.name, 

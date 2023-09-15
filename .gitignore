@@ -13,3 +13,5 @@ __pycache__/
 # PyInstaller related files
 build/*
 dist/
+
+.idea/*

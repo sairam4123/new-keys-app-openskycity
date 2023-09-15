@@ -9,11 +9,10 @@ from db import DatabaseManager
 
 from typing import TYPE_CHECKING, Optional
 from users import User
+from hash_fn import hash_password, hash_password_old
+
 if TYPE_CHECKING:
     from users import UserType
-
-def hash_password(pw):
-    return pw + '$'
 
 @singleton
 class UserManager:
@@ -28,6 +27,7 @@ class UserManager:
 
     def login(self, user_name: str, password: str) -> bool:
         hashed_pass = hash_password(password)
+        old_hash = hash_password_old(password)
 
         if not self.has_user(user_name):
             return False
@@ -36,9 +36,26 @@ class UserManager:
             if user.pw_hash == hashed_pass:
                 self.logged_user = user
                 return True
+            elif user.pw_hash == old_hash:
+                self.logged_user = user
+                self.migrate_user(user, new_hashed_password=hashed_pass)
+                return True
         
         return False
     
+    def logout(self) -> bool:
+        if self.logged_user is None:
+            return False
+        self.logged_user = None
+        return True
+    
+    def migrate_user(self, user: User, **kwargs):
+        hash_pw = kwargs.get('new_hashed_password')
+        if hash_pw:
+            user.pw_hash = hash_pw
+            self.cached_users.append(user)
+        # Add extra migration code
+
     def has_user(self, user_name: str) -> bool:
         if self.cached_users:
             users = [user for user in self.cached_users if user.name == user_name]
@@ -82,7 +99,11 @@ class UserManager:
         self.db.crsr.executemany("""
         INSERT INTO users
         VALUES (?, ?, ?, ?)
-        ON CONFLICT DO UPDATE SET keys=excluded.keys
+        ON CONFLICT 
+            DO UPDATE
+                SET 
+                    keys=excluded.keys,
+                    password_hash=excluded.password_hash
         """, [user.to_tuple() for user in self.cached_users])
 
         self.db.commit()
