@@ -17,9 +17,13 @@ class KeysManager:
         self._cached_keys: list[Key] = []
 
     def create_key(self, key_type: KeyType) -> Key:
+        unalloted_keys = self.get_unalloted_keys(key_type)
+        if unalloted_keys:
+            return unalloted_keys[0]
         _key = Key(Key._generate_key(), key_type)
         self._cached_keys.append(_key)
         return _key
+
 
     def has_key(self, key_val: str) -> bool:
         self.db.crsr.execute(
@@ -29,6 +33,16 @@ class KeysManager:
             """, [key_val]
         )
         return bool(self.db.crsr.fetchone())
+    
+    def get_unalloted_keys(self, of_type: KeyType):
+        self.db.crsr.execute(
+            """
+            SELECT * FROM keys
+            WHERE owner_name IS NULL and type = ?
+            """, [of_type]
+        )
+        keys = self.db.crsr.fetchall()
+        return [Key.from_tuple(key) for key in keys]
 
     def get_key(self, key_val: str) -> Key:
         self.db.crsr.execute(

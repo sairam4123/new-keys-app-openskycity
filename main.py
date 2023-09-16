@@ -42,31 +42,49 @@ def print_menu():
     print("*: Exit")
     print("0: Print this menu")
 
+def save():
+    um._save()
+    km._save()
+
 
 print_menu()
-menu_option = input("Enter an option: ")
+menu_option = ""
 try:
     while menu_option != "*":
+
         logged_in = bool(um.logged_user)
         logged_user = um.logged_user
         if logged_user:
             dev = logged_user.type == users.UserType.DEVELOPER or dev_mode
+        
+        save()
+
+        menu_option = input(f"{('(DEV CONSOLE) ' if dev else '')}Enter an option: ")
+
+        if menu_option == "*":
+            continue
+
         if menu_option == "DEV ACTIVATE":
             dev_mode = True
-            menu_option = input("Enter an option: ")
+            print("Dev Mode activated, GG!")
             continue
+
         if menu_option != "*":
-            if not logged_in and int(menu_option) > 2:
-                print("This option does not exist")
-                menu_option = input("Enter an option: ")
-                continue
-            if not dev and logged_in and int(menu_option) > 6:
-                print("This option does not exist")
-                menu_option = input("Enter an option: ")
-                continue
-            if dev and int(menu_option) > 9:
-                print("This option does not exist")
-                menu_option = input("Enter an option: ")
+            try:
+                if not logged_in and int(menu_option) > 2:
+                    print("This option does not exist")
+                    continue
+
+                if not dev and logged_in and int(menu_option) > 6:
+                    print("This option does not exist")
+                    continue
+                    
+                if dev and int(menu_option) > 9:
+                    print("This option does not exist")
+                    continue
+                
+            except Exception as e:
+                print(e)
                 continue
 
         match menu_option:
@@ -83,7 +101,6 @@ try:
                         print("Logged out successfully")
                     else:
                         print("Failed to logout... are you sure you logged in?")
-                    menu_option = input("Enter an option: ")
                     continue
 
                 print("Login")
@@ -99,7 +116,6 @@ try:
                 print("Buy a key")
                 if not logged_user:
                     print("You are not logged in!")
-                    menu_option = input("Enter an option: ")
                     continue
                 print("Key Menu")
                 print("1. Premium")
@@ -108,14 +124,13 @@ try:
                     int(input("Which key would you like to buy?: "))
                 )
                 key = km.create_key(key_type)
-                print(f"The generated key: {key}")
+                print(f"The alotted key: {key}")
                 logged_user.add_key(key)
 
             case "4":
                 print("Listing all owned keys...")
                 if not logged_user:
                     print("Please login to view your owned keys")
-                    menu_option = input("Enter an option: ")
                     continue
 
                 for key in logged_user.keys:
@@ -124,7 +139,6 @@ try:
             case "5":
                 if not logged_user:
                     print("You cannot sell a key if you are not logged in.")
-                    menu_option = input("Enter an option: ")
                     continue
                 
                 for idx, key in enumerate(logged_user.keys, 1):
@@ -132,14 +146,14 @@ try:
                 sell_option = input("Enter the option which you want to sell: ")
                 if int(sell_option) > len(logged_user.keys):
                     print("The key you want to sell does not exist.")
-                    menu_option = input("Enter an option: ")
+                    
                     continue
 
                 key = logged_user.keys[int(sell_option)-1]
                 confirm = input("Are you sure you want to sell this key?: ")
                 if not confirm.lower().startswith("y"):
                     print("Cancelled the action!")
-                    menu_option = input("Enter an option: ")
+                    
                     continue
 
                 logged_user.remove_key(key)
@@ -179,7 +193,7 @@ try:
             case _:
                 print("Not implemented!")
 
-        menu_option = input("Enter an option: ")
+        
 
 except Exception as e:
     import traceback
@@ -189,7 +203,6 @@ except Exception as e:
     quit()
 
 print("Saving all changes")
-um._save()
-km._save()
+save()
 print("Thank you for using the system!")
 os.system("pause")
